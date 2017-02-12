@@ -9,11 +9,9 @@ def show
 end
 
 def edit
+  find_group_and_check_permission
+end
   @group = Group.find(params[:id])
-
-  if current_user != @group.user
-  redirect_to root_path, alert: "You have no permission ya."
-  end
 end
 
   def new
@@ -33,11 +31,11 @@ end
 
 
 def update
+  find_group_and_check_permission
+
   @group = Group.find(params[:id])
   @group.update(group_params)
-  if current_user != @group.user
-    redireact_to root_path, alert: "You have no permission ya."
-  end
+
   if @group.update(group_params)
   redirect_to group_path, notice: "Update Success"
   else
@@ -46,18 +44,24 @@ def update
 end
 
 def destroy
+  find_group_and_check_permission
+
   @group = Group.find(params[:id])
-  if current_user != @group.user
-    redirect_to root_path, alert: "You have no permission ya."
-  end
   @group.destroy
   redirect_to groups_path, alert: "Group deleted"
 end
 
 private
+def find_group_and_check_permission
+  @group = Group.find(params[:id])
+  if current_user != @group.user
+    redirect_to root_path, alert: "You have no permission ya."
+  end
+end
 
 def group_params
 
   params.require(:group).permit(:title, :description)
 end
+
 end
