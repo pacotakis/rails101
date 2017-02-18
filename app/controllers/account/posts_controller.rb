@@ -5,4 +5,8 @@ def index
   @posts = current_user.posts
 end
 
+def edit
+  @post = @group.find(params[:id])
+end
+
 end
